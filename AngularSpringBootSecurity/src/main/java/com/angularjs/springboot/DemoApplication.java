@@ -43,6 +43,12 @@ public class DemoApplication {
 		return user;
 	}
 	
+	@RequestMapping("/user")
+	public Principal user(Principal user) {
+		System.out.println("user : " + user);
+		return user;
+	}
+	
 	@RequestMapping("/resource")
 	  public Map<String,Object> home() {
 	    Map<String,Object> model = new HashMap<String,Object>();
@@ -55,57 +61,4 @@ public class DemoApplication {
 	        SpringApplication.run(DemoApplication.class, args);
 	    }
 	
-	/*Spring security*/
-	@Configuration
-	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-		public SecurityConfiguration() {
-			
-		}
-		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http.httpBasic().and().authorizeRequests()
-					.antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll().anyRequest()
-					.authenticated().and().csrf()
-					.csrfTokenRepository(csrfTokenRepository()).and()
-					.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
-		}
-		
-		@Override
-	    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
-	        authManagerBuilder.inMemoryAuthentication()
-	                .withUser("user").password("password").roles("USER");
-	    }
-
-		private Filter csrfHeaderFilter() {
-			return new OncePerRequestFilter() {
-				@Override
-				protected void doFilterInternal(HttpServletRequest request,
-						HttpServletResponse response, FilterChain filterChain)
-						throws ServletException, IOException {
-					CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class
-							.getName());
-					if (csrf != null) {
-						Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
-						String token = csrf.getToken();
-						if (cookie == null || token != null
-								&& !token.equals(cookie.getValue())) {
-							cookie = new Cookie("XSRF-TOKEN", token);
-							cookie.setPath("/");
-							response.addCookie(cookie);
-						}
-					}
-					filterChain.doFilter(request, response);
-				}
-			};
-		}
-
-		private CsrfTokenRepository csrfTokenRepository() {
-			HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-			repository.setHeaderName("X-XSRF-TOKEN");
-			return repository;
-		}
-	}
-	
-  
 }
