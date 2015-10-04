@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-=======
+
 /*angular.module('hello', [])
   .controller('home', function($scope, $http) {
   $http.get('resource').success(function(data) {
@@ -7,7 +6,6 @@
   })
 });*/
 
->>>>>>> 276f00fed4d5bab27083413faae2913a388cb904
 angular.module('hello', [ 'ngRoute' ]).config(function($routeProvider, $httpProvider) {
 
 	$routeProvider.when('/', {
