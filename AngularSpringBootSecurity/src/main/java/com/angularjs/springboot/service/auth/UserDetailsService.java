@@ -1,8 +1,13 @@
 package com.angularjs.springboot.service.auth;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -10,61 +15,88 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService{
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("loadUserByUsername . . . " + username);
-		if (username != null) {
-			// TODO Auto-generated method stub
-			return new UserDetails() {
+	public static final String ROLE_ADMIN = "ADMIN";
+    public static final String ROLE_USER = "USER";
 
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = -7391266797545932726L;
+    static class SimpleUserDetails implements UserDetails {
 
-				@Override
-				public boolean isEnabled() {
-					// TODO Auto-generated method stub
-					return true;
-				}
+		private static final long serialVersionUID = 6619655542209655222L;
+		
+		private String username;
+        private String password;
+        private boolean enabled = true;
+        private Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 
-				@Override
-				public boolean isCredentialsNonExpired() {
-					// TODO Auto-generated method stub
-					return true;
-				}
+        public SimpleUserDetails(String username, String pw, String... extraRoles) {
+            this.username = username;
+            this.password = pw;
 
-				@Override
-				public boolean isAccountNonLocked() {
-					// TODO Auto-generated method stub
-					return true;
-				}
+            // setup roles
+            Set<String> roles = new HashSet<String>();
+            roles.addAll(Arrays.<String>asList(null == extraRoles ? new String[0] : extraRoles));
 
-				@Override
-				public boolean isAccountNonExpired() {
-					// TODO Auto-generated method stub
-					return true;
-				}
+            // export them as part of authorities
+            for (String r : roles) {
+                authorities.add(new SimpleGrantedAuthority(role(r)));
+            }
 
-				@Override
-				public String getUsername() {
-					return username;
-				}
+        }
 
-				@Override
-				public String getPassword() {
-					return "user";
-				}
+        public String toString() {
+            return "{enabled:" + isEnabled() + ", username:'" + getUsername() + "', password:'" + getPassword() + "'}";
+        }
 
-				@Override
-				public Collection<? extends GrantedAuthority> getAuthorities() {
-					return null;
-				}
-			};
+        @Override
+        public boolean isEnabled() {
+            return this.enabled;
+        }
 
-		} else {
-			throw new UsernameNotFoundException("could not find the user '" + username + "'");
-		}
+        @Override
+        public boolean isCredentialsNonExpired() {
+            return this.enabled;
+        }
+
+        @Override
+        public boolean isAccountNonLocked() {
+            return this.enabled;
+        }
+
+        @Override
+        public boolean isAccountNonExpired() {
+            return this.enabled;
+        }
+
+        @Override
+        public String getUsername() {
+            return this.username;
+        }
+
+        @Override
+        public String getPassword() {
+            return this.password;
+        }
+
+        private String role(String i) {
+            return "ROLE_" + i;
+        }
+
+        @Override
+        public Collection<? extends GrantedAuthority> getAuthorities() {
+            return this.authorities;
+        }
+    }
+
+    List<UserDetails> details = Arrays.<UserDetails>asList(new SimpleUserDetails("user", "user", ROLE_USER), new SimpleUserDetails("admin", "admin", ROLE_USER, ROLE_ADMIN));
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        for (UserDetails details : this.details) {
+            if (details.getUsername().equalsIgnoreCase(username)) {
+                return details;
+            }
+        }
+
+        return null;
 	}
 
 }
