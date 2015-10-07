@@ -23,55 +23,14 @@ import com.angularjs.springboot.service.user.UserService;
 	@Autowired
 	private UserService service;
 	
-	@Autowired
-	private MongoTemplate mongoTemplate;
-	 
 	public DemoApplication() {
 		
-	}
-	
-	public void init() {
-		// Drop existing collections
-		mongoTemplate.dropCollection("role");
-		mongoTemplate.dropCollection("user");
-
-		// Create new records
-		Role adminRole = new Role();
-		adminRole.setId(UUID.randomUUID().toString());
-		adminRole.setRole(1);
-		
-		Role userRole = new Role();
-		userRole.setId(UUID.randomUUID().toString());
-		userRole.setRole(2);
-		
-		User john = new User();
-		john.setId(UUID.randomUUID().toString());
-		john.setFirstName("John");
-		john.setLastName("Smith");
-		john.setPassword("21232f297a57a5a743894a0e4a801fc3");
-		john.setRole(adminRole);
-		john.setUsername("john");
-		
-		User jane = new User();
-		jane.setId(UUID.randomUUID().toString());
-		jane.setFirstName("Jane");
-		jane.setLastName("Adams");
-		jane.setPassword("ee11cbb19052e40b07aac0ca060c23ee");
-		jane.setRole(userRole);
-		jane.setUsername("jane");
-		
-		// Insert to db
-		mongoTemplate.insert(john, "user");
-		mongoTemplate.insert(jane, "user");
-		mongoTemplate.insert(adminRole, "role");
-		mongoTemplate.insert(userRole, "role");
 	}
 	
 	@RequestMapping("/user")
 	public Principal user(Principal user) {
 		System.out.println("user : "  + user);
 		
-		//init();
 		for (User user1 : service.readAll()) {
 			System.out.println("user : " + user1);
 		}

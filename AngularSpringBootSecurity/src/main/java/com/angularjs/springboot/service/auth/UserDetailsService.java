@@ -1,102 +1,98 @@
 package com.angularjs.springboot.service.auth;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.angularjs.springboot.mongo.model.Role;
+import com.angularjs.springboot.mongo.model.User;
+import com.angularjs.springboot.service.user.UserService;
+
 @Service
-public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService{
+public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-	public static final String ROLE_ADMIN = "ADMIN";
-    public static final String ROLE_USER = "USER";
+	private static final String ROLE_ADMIN = "ROLE_ADMIN";
+	private static final String ROLE_USER = "ROLE_USER";
+	private static final boolean ENABLED = true;
 
-    static class SimpleUserDetails implements UserDetails {
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
-		private static final long serialVersionUID = 6619655542209655222L;
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		init();
+		System.out.println("loadUserByUsername . . .");
+		User user = userService.findByUsername(username);
+		System.out.println("user :: " + user);
+
+		if(user != null) {
+			return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
+				UserDetailsService.ENABLED, ENABLED, ENABLED, ENABLED, getAuthorities(user.getRole().getRole()));
+		}
 		
-		private String username;
-        private String password;
-        private boolean enabled = true;
-        private Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
+		return null;
+	}
 
-        public SimpleUserDetails(String username, String pw, String... extraRoles) {
-            this.username = username;
-            this.password = pw;
+	public List<SimpleGrantedAuthority> getAuthorities(Integer role) {
+		List<SimpleGrantedAuthority> authList = new ArrayList<>();
+		if (role.intValue() == 1) {
+			authList.add(new SimpleGrantedAuthority(ROLE_ADMIN));
 
-            // setup roles
-            Set<String> roles = new HashSet<String>();
-            roles.addAll(Arrays.<String>asList(null == extraRoles ? new String[0] : extraRoles));
+		} else if (role.intValue() == 2) {
+			authList.add(new SimpleGrantedAuthority(ROLE_USER));
+		}
 
-            // export them as part of authorities
-            for (String r : roles) {
-                authorities.add(new SimpleGrantedAuthority(role(r)));
-            }
+		return authList;
+	}
+	
+	public void init() {
+		// Drop existing collections
+		mongoTemplate.dropCollection("role");
+		mongoTemplate.dropCollection("user");
 
-        }
-
-        public String toString() {
-            return "{enabled:" + isEnabled() + ", username:'" + getUsername() + "', password:'" + getPassword() + "'}";
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return this.enabled;
-        }
-
-        @Override
-        public boolean isCredentialsNonExpired() {
-            return this.enabled;
-        }
-
-        @Override
-        public boolean isAccountNonLocked() {
-            return this.enabled;
-        }
-
-        @Override
-        public boolean isAccountNonExpired() {
-            return this.enabled;
-        }
-
-        @Override
-        public String getUsername() {
-            return this.username;
-        }
-
-        @Override
-        public String getPassword() {
-            return this.password;
-        }
-
-        private String role(String i) {
-            return "ROLE_" + i;
-        }
-
-        @Override
-        public Collection<? extends GrantedAuthority> getAuthorities() {
-            return this.authorities;
-        }
-    }
-
-    List<UserDetails> details = Arrays.<UserDetails>asList(new SimpleUserDetails("user", "user", ROLE_USER), new SimpleUserDetails("admin", "admin", ROLE_USER, ROLE_ADMIN));
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        for (UserDetails details : this.details) {
-            if (details.getUsername().equalsIgnoreCase(username)) {
-                return details;
-            }
-        }
-
-        return null;
+		// Create new records
+		Role adminRole = new Role();
+		adminRole.setId(UUID.randomUUID().toString());
+		adminRole.setRole(1);
+		
+		Role userRole = new Role();
+		userRole.setId(UUID.randomUUID().toString());
+		userRole.setRole(2);
+		
+		User admin = new User();
+		admin.setId(UUID.randomUUID().toString());
+		admin.setFirstName("Admin");
+		admin.setLastName("Sinha");
+		admin.setPassword("admin");
+		admin.setRole(adminRole);
+		admin.setUsername("admin");
+		
+		User user = new User();
+		user.setId(UUID.randomUUID().toString());
+		user.setFirstName("User");
+		user.setLastName("Sinha");
+		user.setPassword("user");
+		user.setRole(userRole);
+		user.setUsername("user");
+		
+		// Insert to db
+		/*mongoTemplate.insert(admin, "user");
+		mongoTemplate.insert(user, "user");
+		mongoTemplate.insert(adminRole, "role");
+		mongoTemplate.insert(userRole, "role");*/
+		
+		userService.create(admin);
+		//service.create(user);
 	}
 
 }
