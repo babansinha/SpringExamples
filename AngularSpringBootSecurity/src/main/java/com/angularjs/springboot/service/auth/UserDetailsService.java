@@ -11,16 +11,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.angularjs.springboot.constants.AuthConstants;
 import com.angularjs.springboot.mongo.model.Role;
 import com.angularjs.springboot.mongo.model.User;
 import com.angularjs.springboot.service.user.UserService;
 
 @Service
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
-
-	private static final String ROLE_ADMIN = "ROLE_ADMIN";
-	private static final String ROLE_USER = "ROLE_USER";
-	private static final boolean ENABLED = true;
 
 	@Autowired
 	private UserService userService;
@@ -37,7 +34,7 @@ public class UserDetailsService implements org.springframework.security.core.use
 
 		if(user != null) {
 			return new org.springframework.security.core.userdetails.User(username, user.getPassword(),
-				UserDetailsService.ENABLED, ENABLED, ENABLED, ENABLED, getAuthorities(user.getRole().getRole()));
+					AuthConstants.ENABLED, AuthConstants.ENABLED, AuthConstants.ENABLED, AuthConstants.ENABLED, getAuthorities(user.getRole().getRole()));
 		}
 		
 		return null;
@@ -46,10 +43,10 @@ public class UserDetailsService implements org.springframework.security.core.use
 	public List<SimpleGrantedAuthority> getAuthorities(Integer role) {
 		List<SimpleGrantedAuthority> authList = new ArrayList<>();
 		if (role.intValue() == 1) {
-			authList.add(new SimpleGrantedAuthority(ROLE_ADMIN));
+			authList.add(new SimpleGrantedAuthority(AuthConstants.ROLE_ADMIN));
 
 		} else if (role.intValue() == 2) {
-			authList.add(new SimpleGrantedAuthority(ROLE_USER));
+			authList.add(new SimpleGrantedAuthority(AuthConstants.ROLE_USER));
 		}
 
 		return authList;

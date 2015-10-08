@@ -8,11 +8,9 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.angularjs.springboot.mongo.model.Role;
 import com.angularjs.springboot.mongo.model.User;
 import com.angularjs.springboot.service.user.UserService;
  
@@ -26,7 +24,14 @@ import com.angularjs.springboot.service.user.UserService;
 	public DemoApplication() {
 		
 	}
-	
+
+	// Match everything without a suffix (so not a static resource)
+	/*@RequestMapping(value = "/{[path:[^\\.]*}")
+	public String redirect() {
+		// Forward to home page so that route is preserved.
+		return "forward:/";
+	}
+*/
 	@RequestMapping("/user")
 	public Principal user(Principal user) {
 		System.out.println("user : "  + user);
