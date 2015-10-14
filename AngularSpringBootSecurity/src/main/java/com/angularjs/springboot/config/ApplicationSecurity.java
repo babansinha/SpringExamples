@@ -55,10 +55,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/home.html", "/login.html", "/")
-				.permitAll().anyRequest().authenticated().and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
+		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/home.html", "/footer.html", "/header.html", "/login/login.html", "/login/registration.html", "/")
+				.permitAll().anyRequest().authenticated().and().csrf().disable();/*.and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
 				.addFilterAfter(new CsrfTokenResponseCookieBindingFilter(), CsrfFilter.class);
-		
+		*/
 
 		
 		// Handlers and entry points
@@ -74,7 +74,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		
 		// CSRF
 		
-		http.addFilterAfter(new CsrfTokenResponseCookieBindingFilter(), CsrfFilter.class); // CSRF tokens handling
+		//http.addFilterAfter(new CsrfTokenResponseCookieBindingFilter(), CsrfFilter.class); // CSRF tokens handling
 
 	}
 	

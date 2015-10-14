@@ -5,10 +5,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.angularjs.springboot.mongo.model.User;
@@ -50,7 +57,7 @@ import com.angularjs.springboot.service.user.UserService;
 		model.put("content", "Hello World");
 		return model;
 	}
- 
+	
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
     }

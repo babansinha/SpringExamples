@@ -1,0 +1,59 @@
+<div class="page-header">
+	<h2>Login</h2>
+</div>
+
+<div class="container ng-hide" ng-controller="LoginController"
+	ng-show="initialized">
+
+	<div class="row">
+		<div class="col-md-6">
+			<div class="alert alert-danger" ng-show="error">There was a
+				problem logging in. Please try again.</div>
+			<form role="form" class="form-horizontal" name="loginForm"
+				ng-submit="login()">
+				<div class="form-group">
+					<label for="username" class="col-sm-3 control-label">User
+						Name:</label>
+					<div class="col-sm-9">
+						<input type="username" class="form-control" placeholder="Username"
+							name="username" ng-model="credentials.username" required
+							ng-model="username"> <span class="help-inline"
+							ng-show="loginForm.username.$error.required"
+							style="font-size: 0.7em; color: red;">*Required</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="password" class="col-sm-3 control-label">Password:</label>
+					<div class="col-sm-9">
+						<input type="password" class="form-control" placeholder="Password"
+							name="password" ng-model="credentials.password" required
+							ng-model="password"> <span class="help-inline"
+							ng-show="loginForm.password.$error.required"
+							style="font-size: 0.7em; color: red;">*Required</span>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-3 col-sm-9">
+						<div class="checkbox">
+							<label> <input type="checkbox" ng-model="rememberMe">
+								Remember me
+							</label> <label style="margin-left: 10%;"> <a
+								ng-click="openForgotPassword()">Forgot Password?</a>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-9 col-sm-offset-3">
+						<button type="submit" class="btn btn-primary">Submit</button>
+						<span class="extra-label"
+							style="margin-top: 1%; margin-left: 25%;">New User?</span> <a
+							class="pull-right btn btn-danger" href="#signUp">Sign Up
+							&raquo;</a>
+					</div>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</div>

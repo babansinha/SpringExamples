@@ -1,8 +1,13 @@
-<h1>Greeting</h1>
-<div ng-show="auth.authenticated">
-	<p>The User ID is : <b>{{user.username}}</b></p>
-	<p>The Authority is : <b>{{user.authorities}}</b></p>
+<div class="container" ng-controller="homeController">
+	<div class="section section-tabs text-center">
+		Home Page
+		<h1>Greeting</h1>
+		<div ng-show="auth.authenticated" ng-init="resource()">
+			<p>The ID is {{user}}</p>
+		</div>
+	</div>
 </div>
-<div  ng-hide="auth.authenticated">
-	<p>Login to see your greeting</p>
-</div>
+		
+	
+
+
