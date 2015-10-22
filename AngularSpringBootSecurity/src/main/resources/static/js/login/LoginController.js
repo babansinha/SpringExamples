@@ -2,7 +2,7 @@
 var loginController = angular.module('LoginController',
 		[ 'auth', 'userService' ]);
 
-loginController.controller('LoginController', function($scope, $rootScope,
+loginController.controller('LoginController', function($scope, $rootScope, $location,
 		auth, userService) {
 	$rootScope.initialized = true;
 	$scope.credentials = {};
@@ -16,7 +16,7 @@ loginController.controller('LoginController', function($scope, $rootScope,
 			if (authenticated) {
 				console.log("Login succeeded");
 				$scope.error = false;
-				userService.resource(resourceCallback);
+				//$location.path("/home");
 			} else {
 				console.log("Login failed")
 				$scope.error = true;

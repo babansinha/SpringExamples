@@ -82,6 +82,12 @@ angular.module('auth', []).factory(
 						console.log("$routeChangeStart. . .");
 						//enter();
 					});
+					
+					/*$rootScope.$on('Unauthorized', function() {
+						console.log("Unauthorized. . .");
+						//$location.path(auth.path);
+						//enter();
+					});*/
 
 				}
 

@@ -55,7 +55,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/home.html", "/footer.html", "/header.html", "/login/login.html", "/login/registration.html", "/")
+		http.httpBasic().and().authorizeRequests().antMatchers("/index.html", "/home.html", "/footer.html", "/header.html", "/login/login.html", "/login/registration.html", "/error/401.html", "/error/402.html", "/error/422.html", "/error/500.html",  "/")
 				.permitAll().anyRequest().authenticated().and().csrf().disable();/*.and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
 				.addFilterAfter(new CsrfTokenResponseCookieBindingFilter(), CsrfFilter.class);
 		*/

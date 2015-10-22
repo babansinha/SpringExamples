@@ -1,5 +1,5 @@
 body {
-	padding-top: 60px;
+	padding: 50px;
 }
 
 ng-hide {
@@ -192,7 +192,7 @@ article h3 {
   position: absolute;
   top: 40px;
   padding: 20px 10px 0 50px;
-  margin: 0 0 0 -40px;
+  /*margin: 0 0 0 -40px;*/
   border-radius: 30px;
   border-top-left-radius: 30px;
   background-color: rgba(247,247,247,.7);
